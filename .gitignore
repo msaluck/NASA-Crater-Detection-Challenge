@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+
+# Ignore the large training data images
+nasa-craters-data/train/
+*.tar
+*.zip
+
+# Ignore locally generated outputs
+crater_baseline/output/
