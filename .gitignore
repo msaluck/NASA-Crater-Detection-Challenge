@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
+*.so
 .DS_Store
+.venv/
 .vscode/
 
 # Ignore the large training data images
