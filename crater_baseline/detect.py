@@ -11,7 +11,7 @@ def preprocess(img):
 def detect_ellipses(gray):
     h, w = gray.shape
 
-    SCALE = 0.5  # try 0.5 first (2× speed); 0.4 if still slow
+    SCALE = 0.37  # try 0.5 first (2× speed); 0.4 if still slow 0.5 -> 0.37 (more accurate); 0.33 (even faster, less accurate)
 
     # edges = cv2.Canny(gray, 60, 120)
     small = cv2.resize(
@@ -40,7 +40,7 @@ def detect_ellipses(gray):
         dp=1.2,
         minDist=int((w * SCALE) // 10),
         param1=120,
-        param2=18,                     # slightly stricter
+        param2=22,                     # slightly stricter 18 -> 22
         minRadius=int(8 * SCALE),
         maxRadius=int((w * SCALE) // 6)  # SPEED FIX #2
     )
@@ -71,7 +71,7 @@ def detect_ellipses(gray):
             continue
 
         cnt = max(cnts, key=len)
-        if len(cnt) < 30:
+        if len(cnt) < 40: # min number of points to fit ellipse *before 30
             continue
 
         cnt = cnt + np.array([[x1, y1]])
@@ -100,7 +100,7 @@ def detect_ellipses(gray):
         # =========================
         # SPEED FIX #3: EARLY STOP
         # =========================
-        if len(ellipses) >= 10:
+        if len(ellipses) >= 6: # limit to max 6 craters per image before 10
             break
 
     return ellipses

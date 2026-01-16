@@ -1,6 +1,8 @@
+import os
 import pandas as pd
 
 def save_csv(results, out_path):
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     rows = []
 
     for image_id, ellipses in results.items():
