@@ -37,13 +37,18 @@ for img_path in tqdm(image_paths, desc="Processing images"):
 
     proc = preprocess(img)
     ellipses = detect_ellipses(proc)
-    ellipses = suppress_overlaps(ellipses)
 
-    # GEOMETRY FILTER (aligns with data_combiner.py)
+    # 1️⃣ geometry filter FIRST
     ellipses = [e for e in ellipses if ellipse_is_valid(e)]
 
-    # EXTRA CONSERVATIVE RULE (scorer-aware)
-    ellipses = [e for e in ellipses if e["b"] >= 10]
+    # 2️⃣ relax size threshold
+    ellipses = [e for e in ellipses if e["b"] >= 7]
+
+    # 3️⃣ overlap suppression LAST
+    ellipses = suppress_overlaps(ellipses)
+
+    # 4️⃣ scorer-aware cap
+    ellipses = ellipses[:8]
 
     norm = os.path.normpath(img_path)
     parts = [p for p in norm.split(os.sep) if p]
