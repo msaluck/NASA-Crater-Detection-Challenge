@@ -108,6 +108,8 @@ def score1(ts, ps):
                 best_p = p
                 best_xi_2 = xi_2
         if best_xi_2 < XI_2_THRESH: # matched
+            print("xi_2:", best_xi_2)
+            break
             t['matched'] = True
             best_p['matched'] = True
             dgas.append(1 - best_dGA / math.pi)

@@ -1,11 +1,21 @@
+import sys
 import cv2
 import os
 import time
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, PROJECT_ROOT)
+
 from geometry_filter import ellipse_is_valid
 from detect import preprocess, detect_ellipses
 from ellipse_utils import suppress_overlaps
 from save import save_csv
 from tqdm import tqdm
+from cnn.infer import load_model, refine_ellipses
+
+CNN_WEIGHTS = "../cnn/crater_refiner.pth"
+cnn_model = load_model(CNN_WEIGHTS)
+
 import subprocess
 
 IMG_DIR = "../nasa-craters-data/train/"
@@ -35,8 +45,11 @@ for img_path in tqdm(image_paths, desc="Processing images"):
     if img is None:
         continue
 
-    proc = preprocess(img)
-    ellipses = detect_ellipses(proc)
+    # proc = preprocess(img)
+    ellipses = detect_ellipses(img)
+
+    # Refine ellipses using CNN
+    ellipses = refine_ellipses(img, ellipses, cnn_model)
 
     # 1️⃣ geometry filter FIRST
     ellipses = [e for e in ellipses if ellipse_is_valid(e)]
